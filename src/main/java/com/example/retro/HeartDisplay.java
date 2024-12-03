@@ -8,7 +8,7 @@ import javafx.scene.layout.HBox;
  * Show health hearts at the above left
  */
 public class HeartDisplay {
-	
+
 	private static final String HEART_IMAGE_NAME = "/com/example/retro/images/heart.png";
 	private static final int HEART_HEIGHT = 50;
 	private static final int INDEX_OF_FIRST_ITEM = 0;
@@ -16,7 +16,7 @@ public class HeartDisplay {
 	private double containerXPosition;
 	private double containerYPosition;
 	private int numberOfHeartsToDisplay;
-	
+
 	public HeartDisplay(double xPosition, double yPosition, int heartsToDisplay) {
 		this.containerXPosition = xPosition;
 		this.containerYPosition = yPosition;
@@ -24,13 +24,16 @@ public class HeartDisplay {
 		initializeContainer();
 		initializeHearts();
 	}
-	
+
 	private void initializeContainer() {
 		container = new HBox();
 		container.setLayoutX(containerXPosition);
-		container.setLayoutY(containerYPosition);		
+		container.setLayoutY(containerYPosition);
 	}
-	
+
+	/**
+	 * Initialize health of player
+	 */
 	private void initializeHearts() {
 		for (int i = 0; i < numberOfHeartsToDisplay; i++) {
 			ImageView heart = new ImageView(new Image(getClass().getResource(HEART_IMAGE_NAME).toExternalForm()));
@@ -40,12 +43,18 @@ public class HeartDisplay {
 			container.getChildren().add(heart);
 		}
 	}
-	
+
+	/**
+	 * Remove health heart
+	 */
 	public void removeHeart() {
 		if (!container.getChildren().isEmpty())
 			container.getChildren().remove(INDEX_OF_FIRST_ITEM);
 	}
 
+	/**
+	 * Add health heart
+	 */
 	public void addHeart() {
 		ImageView heart = new ImageView(new Image(getClass().getResource(HEART_IMAGE_NAME).toExternalForm()));
 
@@ -53,7 +62,7 @@ public class HeartDisplay {
 		heart.setPreserveRatio(true);
 		container.getChildren().add(heart);
 	}
-	
+
 	public HBox getContainer() {
 		return container;
 	}

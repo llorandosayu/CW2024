@@ -25,6 +25,9 @@ public class EnemyPlane extends FighterPlane {
 		moveHorizontally(HORIZONTAL_VELOCITY);
 	}
 
+	/**
+	 * Enemy plane firing projectile
+	 */
 	@Override
 	public ActiveActorDestructible fireProjectile() {
 		if (Math.random() < FIRE_RATE) {

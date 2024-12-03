@@ -6,10 +6,11 @@ import com.example.retro.plane.EnemyPlane;
 import com.example.retro.plane.HealthHeart;
 
 /**
- * The implementation class for level one, will show ui components for level one, and handle specific logics of level one
+ * The implementation class for level one, will show ui components for level
+ * one, and handle specific logics of level one
  */
 public class LevelOne extends LevelParent {
-	
+
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/retro/images/background1.jpg";
 	private static final String NEXT_LEVEL = "com.example.retro.level.LevelTwo";
 	private static final int TOTAL_ENEMIES = 5;
@@ -19,24 +20,38 @@ public class LevelOne extends LevelParent {
 	private static final double HEALTH_HEART_SPAWN_PROBABILITY = 0.03;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
+	/**
+	 * Constructor method
+	 * 
+	 * @param screenHeight
+	 * @param screenWidth
+	 */
 	public LevelOne(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
 	}
 
+	/**
+	 * Check if the game is over
+	 */
 	@Override
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
-		}
-		else if (userHasReachedKillTarget())
+		} else if (userHasReachedKillTarget())
 			goToNextLevel(NEXT_LEVEL);
 	}
 
+	/**
+	 * Initialize friendly units
+	 */
 	@Override
 	protected void initializeFriendlyUnits() {
 		getRoot().getChildren().add(getUser());
 	}
 
+	/**
+	 * Create enemy units
+	 */
 	@Override
 	protected void spawnEnemyUnits() {
 		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
@@ -49,15 +64,26 @@ public class LevelOne extends LevelParent {
 		}
 	}
 
+	/**
+	 * Create level view object
+	 */
 	@Override
 	protected LevelView instantiateLevelView() {
 		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
 	}
 
+	/**
+	 * Check if the player has killed enough enemy units
+	 * 
+	 * @return
+	 */
 	private boolean userHasReachedKillTarget() {
 		return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
 	}
 
+	/**
+	 * Create weapon enhancement units
+	 */
 	@Override
 	protected void spawnBigGuns() {
 		if (getCurrentNumberOfBigGuns() == 0) {
@@ -69,6 +95,9 @@ public class LevelOne extends LevelParent {
 		}
 	}
 
+	/**
+	 * Create extra health units
+	 */
 	@Override
 	protected void spawnHealthHearts() {
 		if (getCurrentNumberOfHealthHearts() == 0) {

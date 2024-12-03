@@ -6,7 +6,8 @@ import com.example.retro.plane.Boss;
 import com.example.retro.plane.HealthHeart;
 
 /**
- * The implementation class for level two, will show ui components for level one, and handle specific logics of level two
+ * The implementation class for level two, will show ui components for level
+ * one, and handle specific logics of level two
  */
 public class LevelTwo extends LevelParent {
 
@@ -27,12 +28,14 @@ public class LevelTwo extends LevelParent {
 		getRoot().getChildren().add(getUser());
 	}
 
+	/**
+	 * Check if the boss is defeated
+	 */
 	@Override
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
-		}
-		else if (boss.isDestroyed()) {
+		} else if (boss.isDestroyed()) {
 			winGame();
 		}
 	}
@@ -44,6 +47,9 @@ public class LevelTwo extends LevelParent {
 		}
 	}
 
+	/**
+	 * Create big gun buff randomly based on probability
+	 */
 	@Override
 	protected void spawnBigGuns() {
 		if (getCurrentNumberOfBigGuns() == 0) {
@@ -55,6 +61,9 @@ public class LevelTwo extends LevelParent {
 		}
 	}
 
+	/**
+	 * Create health heart buff randomly based on probability
+	 */
 	@Override
 	protected void spawnHealthHearts() {
 		if (getCurrentNumberOfHealthHearts() == 0) {

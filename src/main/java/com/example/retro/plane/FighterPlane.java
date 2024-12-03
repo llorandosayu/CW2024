@@ -15,7 +15,10 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 	}
 
 	public abstract ActiveActorDestructible fireProjectile();
-	
+
+	/**
+	 * When HP reaches zero, destroy the player's plane
+	 */
 	@Override
 	public void takeDamage() {
 		health--;
@@ -43,5 +46,5 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 	public int getHealth() {
 		return health;
 	}
-		
+
 }

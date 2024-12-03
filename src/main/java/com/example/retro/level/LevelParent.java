@@ -39,13 +39,14 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	private final List<ActiveActorDestructible> bigGuns;
 	private final List<ActiveActorDestructible> healthHearts;
-	
+
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
 	private boolean isUserPlaneBigGun = false;
 
 	/**
 	 * Constructor method, will initialize many objects
+	 * 
 	 * @param backgroundImageName
 	 * @param screenHeight
 	 * @param screenWidth
@@ -91,13 +92,18 @@ public abstract class LevelParent extends Observable {
 	 * Restart the game of current level, but it doesn't work correctly.
 	 * need to fix bugs.
 	 */
-	private  void restartGame() {
+	private void restartGame() {
 		levelView.getGameOverImage().hideGameOverImage();
 		root.getChildren().clear();
 		initializeScene();
 		startGame();
 	}
 
+	/**
+	 * initialize game scene
+	 * 
+	 * @return
+	 */
 	public Scene initializeScene() {
 		initializeBackground();
 		initializeFriendlyUnits();
@@ -106,30 +112,41 @@ public abstract class LevelParent extends Observable {
 		levelView.getGameOverImage().setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.ENTER) restartGame();
+				if (kc == KeyCode.ENTER)
+					restartGame();
 			}
 		});
 
 		return scene;
 	}
 
+	/**
+	 * Start the Game
+	 */
 	public void startGame() {
 		background.requestFocus();
 		timeline.play();
 	}
 
+	/**
+	 * Go to next level of the game
+	 * 
+	 * @param levelName
+	 */
 	public void goToNextLevel(String levelName) {
 		setChanged();
 		notifyObservers(levelName);
 	}
 
 	/**
-	 * Key method, will be called frequently, and handle displaying ui components and logics
+	 * Key method, will be called frequently, and handle displaying ui components
+	 * and logics
 	 */
 	private void updateScene() {
 		spawnEnemyUnits();
 		spawnBigGuns();
-		spawnHealthHearts();;
+		spawnHealthHearts();
+		;
 		updateActors();
 		generateEnemyFire();
 		updateNumberOfEnemies();
@@ -147,12 +164,18 @@ public abstract class LevelParent extends Observable {
 		checkIfGameOver();
 	}
 
+	/**
+	 * Initialize game timeline
+	 */
 	private void initializeTimeline() {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
 		timeline.getKeyFrames().add(gameLoop);
 	}
 
+	/**
+	 * initialize game background
+	 */
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
@@ -160,20 +183,27 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.SPACE) fireProjectile();
+				if (kc == KeyCode.UP)
+					user.moveUp();
+				if (kc == KeyCode.DOWN)
+					user.moveDown();
+				if (kc == KeyCode.SPACE)
+					fireProjectile();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
+				if (kc == KeyCode.UP || kc == KeyCode.DOWN)
+					user.stop();
 			}
 		});
 		root.getChildren().add(background);
 	}
 
+	/**
+	 * Fire weapon
+	 */
 	private void fireProjectile() {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
@@ -186,10 +216,18 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Create enemy fires
+	 */
 	private void generateEnemyFire() {
 		enemyUnits.forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
 	}
 
+	/**
+	 * Create enemy weapon fire units
+	 * 
+	 * @param projectile
+	 */
 	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
 		if (projectile != null) {
 			root.getChildren().add(projectile);
@@ -197,6 +235,9 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Update different game objects
+	 */
 	private void updateActors() {
 		friendlyUnits.forEach(plane -> plane.updateActor());
 		enemyUnits.forEach(enemy -> enemy.updateActor());
@@ -206,6 +247,9 @@ public abstract class LevelParent extends Observable {
 		healthHearts.forEach(healthHeart -> healthHeart.updateActor());
 	}
 
+	/**
+	 * Remove destroyed objects
+	 */
 	private void removeAllDestroyedActors() {
 		removeDestroyedActors(friendlyUnits);
 		removeDestroyedActors(enemyUnits);
@@ -222,15 +266,21 @@ public abstract class LevelParent extends Observable {
 		actors.removeAll(destroyedActors);
 	}
 
+	/**
+	 * Handle Aircraft Collision
+	 */
 	private void handlePlaneCollisions() {
 		handleCollisions(friendlyUnits, enemyUnits);
 	}
 
+	/**
+	 * Handle player plane collision with big gun units
+	 */
 	private void handleBigGunCollisions() {
 		for (ActiveActorDestructible actor : bigGuns) {
 			for (ActiveActorDestructible otherActor : friendlyUnits) {
 				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					//TODO: add functions to enhance guns of player plane
+					// TODO: add functions to enhance guns of player plane
 					isUserPlaneBigGun = true;
 					actor.takeDamage();
 				}
@@ -238,25 +288,40 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Handle player plane collision with Health units
+	 */
 	private void handleHealthHeartCollisions() {
 		for (ActiveActorDestructible actor : healthHearts) {
 			for (ActiveActorDestructible otherActor : friendlyUnits) {
 				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					((FighterPlane)otherActor).addHealth();
+					((FighterPlane) otherActor).addHealth();
 					actor.takeDamage();
 				}
 			}
 		}
 	}
 
+	/**
+	 * Check if a projectile hits enemy aircraft
+	 */
 	private void handleUserProjectileCollisions() {
 		handleCollisions(userProjectiles, enemyUnits);
 	}
 
+	/**
+	 * Check if enemies' projectile hits player plane
+	 */
 	private void handleEnemyProjectileCollisions() {
 		handleCollisions(enemyProjectiles, friendlyUnits);
 	}
 
+	/**
+	 * common method for checking collisions
+	 * 
+	 * @param actors1
+	 * @param actors2
+	 */
 	private void handleCollisions(List<ActiveActorDestructible> actors1,
 			List<ActiveActorDestructible> actors2) {
 		for (ActiveActorDestructible actor : actors2) {
@@ -269,6 +334,9 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Check if enemy plane has passed our border
+	 */
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
 			if (enemyHasPenetratedDefenses(enemy)) {
@@ -278,6 +346,9 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Check if big gun buff has passed our border
+	 */
 	private void handleBigGunPenetration() {
 		for (ActiveActorDestructible bigGun : bigGuns) {
 			if (bigGunHasPenetratedDefenses(bigGun)) {
@@ -286,6 +357,9 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	/**
+	 * Check if health heart has passed our border
+	 */
 	private void handleHealthHeartPenetration() {
 		for (ActiveActorDestructible healthHeart : healthHearts) {
 			if (healthHeartHasPenetratedDefenses(healthHeart)) {
@@ -298,6 +372,9 @@ public abstract class LevelParent extends Observable {
 		levelView.updateHearts(user.getHealth());
 	}
 
+	/**
+	 * Update kills count of player
+	 */
 	private void updateKillCount() {
 		for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
 			user.incrementKillCount();
@@ -316,11 +393,17 @@ public abstract class LevelParent extends Observable {
 		return Math.abs(healthHeart.getTranslateX()) > screenWidth;
 	}
 
+	/**
+	 * Show image for winning
+	 */
 	protected void winGame() {
 		timeline.stop();
 		levelView.showWinImage();
 	}
 
+	/**
+	 * Show image for losing
+	 */
 	protected void loseGame() {
 		timeline.stop();
 		levelView.showGameOverImage();
